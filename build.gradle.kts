@@ -25,6 +25,7 @@ version = "0.0.1-SNAPSHOT"
 dependencies {
   compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compile("org.jetbrains.kotlin:kotlin-reflect")
+  compile("org.funktionale:funktionale-currying:1.2")
 
   testImplementation("org.assertj:assertj-core:$assertJVersion")
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
