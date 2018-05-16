@@ -55,10 +55,10 @@ class RouletteShell
 
   @ShellMethod("Play java roulette")
   fun play(
-      @ShellOption prefix:String,
+      @ShellOption contains: String,
       @ShellOption includeInner: Boolean = false,
       @ShellOption includeAnonymous: Boolean = false
-  )
+  ): String
   {
     val gameSet = raw.filter {
       if (includeInner) true
@@ -67,9 +67,10 @@ class RouletteShell
       if (includeAnonymous) true
       else !it.toString().contains(Regex("\\\$[0-9]+"))
     }.filter {
-      it.toString().substringAfter(" ").startsWith(prefix)
+      it.toString().substringAfter(" ").contains(contains)
     }
 
-    println(gameSet[random.nextInt(gameSet.size)])
+    return if (gameSet.isEmpty()) "No match for $contains"
+    else gameSet[random.nextInt(gameSet.size)].toString()
   }
 }
