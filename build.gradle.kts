@@ -7,9 +7,16 @@ val reflectionsVersion = "0.9.11"
 
 plugins {
   val kotlinVersion = "1.2.41"
-  id("org.jetbrains.kotlin.jvm") version kotlinVersion
-  java
   idea
+  java
+  id("org.jetbrains.kotlin.jvm") version kotlinVersion
+  id("org.springframework.boot") version "2.0.2.RELEASE"
+  id("io.spring.dependency-management") version "1.0.5.RELEASE"
+  id ("org.jetbrains.kotlin.plugin.allopen") version kotlinVersion
+}
+
+apply {
+  plugin("kotlin-spring")
 }
 
 java {
@@ -17,8 +24,8 @@ java {
   targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-tasks.withType<KotlinCompile>{
-  kotlinOptions{
+tasks.withType<KotlinCompile> {
+  kotlinOptions {
     jvmTarget = "1.8"
   }
 }
@@ -44,6 +51,9 @@ dependencies {
 
   compile("org.reflections:reflections:$reflectionsVersion")
 
+  compile("org.springframework:spring-core")
+  compile("org.springframework.shell:spring-shell-starter:2.0.1.RELEASE")
+
   testImplementation("org.assertj:assertj-core:$assertJVersion")
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
 
@@ -56,6 +66,7 @@ buildscript {
     jcenter()
   }
   dependencies {
+    val kotlinVersion = "1.2.41"
     classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.+")
   }
 }
