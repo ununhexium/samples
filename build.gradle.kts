@@ -5,6 +5,17 @@ val junitPlatformVersion = "1.0.1"
 val junitJupiterVersion = "5.1.0"
 val reflectionsVersion = "0.9.11"
 
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+  }
+  dependencies {
+    val kotlinVersion = "1.2.41"
+    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.+")
+  }
+}
+
 plugins {
   val kotlinVersion = "1.2.41"
   idea
@@ -60,17 +71,6 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
-buildscript {
-  repositories {
-    mavenCentral()
-    jcenter()
-  }
-  dependencies {
-    val kotlinVersion = "1.2.41"
-    classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.+")
-  }
-}
-
 tasks.withType<Test> {
   useJUnitPlatform()
 }
@@ -88,3 +88,10 @@ tasks.withType<Jar> {
   }
 }
 
+tasks {
+  task<Exec>("htmlDeps") {
+    dependsOn("htmlDependencyReport")
+    val browser = "/usr/bin/sensible-browser"
+    commandLine(browser, "build/reports/project/dependencies/index.html")
+  }
+}

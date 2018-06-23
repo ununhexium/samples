@@ -7,6 +7,10 @@ fun main(args: Array<String>)
     var smallestRatioError = Double.MAX_VALUE
     var triple = Triple(0L, 0L, 0L)
 
+    val l by lazy {
+
+}
+
     val MAX = 100L
 
 
