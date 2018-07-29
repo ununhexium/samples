@@ -4,6 +4,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.Duration
 import java.time.Instant
+import kotlin.system.measureTimeMillis
 
 /**
  * Finds and lists english anagrams by number of letters
@@ -14,11 +15,29 @@ fun main(args: Array<String>) {
     val path = "/home/ununhexium/dev/data/english/words.txt"
     val words = Files.readAllLines(Paths.get(path))
 
+    val benchmark = listOf(
+        ::naive,
+        ::better
+    ).map { method ->
+        method to measureTimeMillis {
+            findAnagrams(words, method)
+        }
+    }
+
+    benchmark.forEach {
+        println(it.first.name + " " + it.second)
+    }
+}
+
+private fun findAnagrams(
+    words: MutableList<String>,
+    keyBuilder: (String) -> String
+) {
     checkpoint()
     println("READ")
-    words
+    val anagrams = words
         .groupBy {
-            it.map { it }.sorted().joinToString(separator = "")
+            keyBuilder(it)
         }
         .also {
             checkpoint()
@@ -31,11 +50,17 @@ fun main(args: Array<String>) {
             checkpoint()
             println("Filtered")
         }
-        .forEach {
-            println(it.value.joinToString(separator = ", ") { it })
-        }
     checkpoint()
+    println("Found ${anagrams.size} anagrams")
 }
+
+fun better(string: String): String {
+    val inplace = string.toLowerCase().toCharArray().sort()
+    return inplace.toString()
+}
+
+private fun naive(it: String) =
+    it.toLowerCase().toList().sorted().joinToString(separator = "")
 
 var time = Instant.now()
 
