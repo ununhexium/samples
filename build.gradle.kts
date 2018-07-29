@@ -11,13 +11,13 @@ buildscript {
     jcenter()
   }
   dependencies {
-    val kotlinVersion = "1.2.41"
+    val kotlinVersion = "1.2.51"
     classpath("org.junit.platform:junit-platform-gradle-plugin:1.0.+")
   }
 }
 
 plugins {
-  val kotlinVersion = "1.2.41"
+  val kotlinVersion = "1.2.51"
   idea
   java
   id("org.jetbrains.kotlin.jvm") version kotlinVersion
