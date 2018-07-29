@@ -19,8 +19,16 @@ fun main(args: Array<String>) {
         ::naive,
         ::better
     ).map { method ->
-        method to measureTimeMillis {
-            findAnagrams(words, method)
+        lateinit var result: Map<String, List<String>>
+        val time =  measureTimeMillis {
+            result = findAnagrams(words, method)
+        }
+        Triple(method, time, result)
+    }
+
+    benchmark.forEachIndexed { index, _ ->
+        if(benchmark[0].third != benchmark[index].third){
+            throw IllegalStateException("Inconsistent result")
         }
     }
 
@@ -32,7 +40,7 @@ fun main(args: Array<String>) {
 private fun findAnagrams(
     words: MutableList<String>,
     keyBuilder: (String) -> String
-) {
+): Map<String, List<String>> {
     checkpoint()
     println("READ")
     val anagrams = words
@@ -52,15 +60,18 @@ private fun findAnagrams(
         }
     checkpoint()
     println("Found ${anagrams.size} anagrams")
+    return anagrams
 }
 
 fun better(string: String): String {
-    val inplace = string.toLowerCase().toCharArray().sort()
-    return inplace.toString()
+    val inplace = string.toLowerCase().toCharArray()
+    inplace.sort()
+    return String(inplace)
 }
 
 private fun naive(it: String) =
     it.toLowerCase().toList().sorted().joinToString(separator = "")
+
 
 var time = Instant.now()
 
