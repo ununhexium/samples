@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val assertJVersion = "3.9.1"
+val jmhVersion = "1.21"
 val junitPlatformVersion = "1.0.1"
 val junitJupiterVersion = "5.1.0"
 val reflectionsVersion = "0.9.11"
@@ -48,6 +49,7 @@ idea {
 }
 
 repositories {
+  mavenLocal()
   mavenCentral()
   jcenter()
 }
@@ -59,6 +61,11 @@ dependencies {
   compile("org.jetbrains.kotlin:kotlin-reflect")
 
   compile("org.funktionale:funktionale-currying:1.2")
+
+  compile("net.lab0.kotlin.more:morekotlin:0.1.4")
+
+  compile("org.openjdk.jmh:jmh-core:$jmhVersion")
+  compile("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
 
   compile("org.reflections:reflections:$reflectionsVersion")
 
