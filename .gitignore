@@ -1,11 +1,7 @@
 
 build/
 .gradle/
-gradle/
-gradlew
-gradlew.bat
 **/*.iml
 .idea/
 *.log
-settings.gradle
 out/
