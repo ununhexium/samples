@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val assertJVersion = "3.9.1"
+val guavaVersion = "26.0-jre"
 val jmhVersion = "1.21"
 val junitPlatformVersion = "1.0.1"
 val junitJupiterVersion = "5.1.0"
@@ -57,6 +58,8 @@ repositories {
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
+  compile("com.google.guava:guava:$guavaVersion")
+
   compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   compile("org.jetbrains.kotlin:kotlin-reflect")
 
