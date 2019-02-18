@@ -58,6 +58,8 @@ repositories {
 version = "0.0.1-SNAPSHOT"
 
 dependencies {
+  val jqwikVersion = "0.9.3"
+
   compile("com.google.guava:guava:$guavaVersion")
 
   compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -74,6 +76,10 @@ dependencies {
 
   compile("org.springframework:spring-core")
   compile("org.springframework.shell:spring-shell-starter:2.0.1.RELEASE")
+
+  // TEST
+
+  testCompile(group = "net.jqwik", name = "jqwik", version = jqwikVersion)
 
   testImplementation("org.assertj:assertj-core:$assertJVersion")
   testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")

@@ -15,7 +15,7 @@ fun fizzBuzz(n: Int): String
 {
     val fizzer = tester.curried()(n)(3)("Fizz")
     val buzzer = tester.curried()(n)(5)("Buzz")
-    return fizzer(buzzer({ it }))(n.toString())
+    return fizzer(buzzer { it })(n.toString())
 }
 
 /**
@@ -30,4 +30,5 @@ fun genericFizzBuzz(map: List<Pair<Int, String>>, n: Int): String
 
     val generic = testers.foldRight({ it }, { t, r: (String) -> String -> t(r) })
     return generic(n.toString())
+
 }
