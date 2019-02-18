@@ -1,6 +1,7 @@
 package strassenbahn
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -165,6 +166,50 @@ internal class ThriftTicketKtTest {
             Proposition(
                 mapOf(
                     groupTicket to 1
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `more monkeys`() {
+        // in this case, getting a group ticket is cheaper than adult + child tickets
+        val area = 1
+        assertThat(
+            cheapestPrice(
+                Wanted(area, adults = 12, children = 3, tripsPerPeople = 1),
+                listOf(oneWayAdult, groupTicket, dailyTicketSingleAdult, oneWayChild)
+            )
+        ).isEqualTo(
+            // daily: 5.00
+            // 2 tickets: 6.00
+            Proposition(
+                mapOf(
+                    dailyTicketSingleAdult to 1,
+                    groupTicket to 2,
+                    oneWayAdult to 1
+                )
+            )
+        )
+    }
+
+    @Disabled
+    @Test
+    fun `lotsa monkeys`() {
+        // in this case, getting a group ticket is cheaper than adult + child tickets
+        val area = 1
+        assertThat(
+            cheapestPrice(
+                Wanted(area, adults = 60, children = 15, tripsPerPeople = 1),
+                listOf(oneWayAdult, groupTicket, dailyTicketSingleAdult, oneWayChild)
+            )
+        ).isEqualTo(
+            // daily: 5.00
+            // 2 tickets: 6.00
+            Proposition(
+                mapOf(
+                    dailyTicketSingleAdult to 5,
+                    groupTicket to 11
                 )
             )
         )
