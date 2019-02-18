@@ -66,6 +66,27 @@ data class Proposition(val tickets: Map<Ticket, Int>) {
         new[ticket] = (this.tickets[ticket] ?: 0) + 1
         return Proposition(new)
     }
+
+    fun canAccommodate(wanted: Wanted) =
+        listOf(
+            // strict adult and child separation
+            { this.adultSeats >= wanted.adults && this.childrenSeats >= wanted.children },
+            // children use adult ticket
+            {
+                val freeAdultSeats = this.adultSeats - wanted.adults
+                val freeChildrenSeats = (this.childrenSeats + freeAdultSeats) - wanted.children
+
+                if (freeAdultSeats < 0) {
+                    // not enough seats for adults
+                    false
+                }
+                else {
+                    freeChildrenSeats >= 0
+                }
+            }
+        ).any {
+            it()
+        }
 }
 
 /**
@@ -109,7 +130,7 @@ fun browseAllPropositions(
     while (queue.isNotEmpty()) {
         val current = queue.removeAt(0)
         val price = current.getPrice(wanted.area, wanted.tripsPerPeople)
-        val canAccomodateEverybody = current.adultSeats >= wanted.adults && current.childrenSeats >= wanted.children
+        val canAccomodateEverybody = current.canAccommodate(wanted)
         if (canAccomodateEverybody) {
             if (price < bestPriceSoFar) {
                 bestSoFar = current

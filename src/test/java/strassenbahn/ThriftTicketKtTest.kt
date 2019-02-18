@@ -67,7 +67,7 @@ internal class ThriftTicketKtTest {
     }
 
     @Test
-    fun `1 person and 1 offer`() {
+    fun `1 adults and 1 offer`() {
         val area = 1
         assertThat(
             cheapestPrice(Wanted(area, adults = 1), listOf(oneWayAdult))
@@ -81,7 +81,7 @@ internal class ThriftTicketKtTest {
     }
 
     @Test
-    fun `4 people and 2 offers`() {
+    fun `4 adults and 2 offers`() {
         val area = 1
         assertThat(
             cheapestPrice(Wanted(area, adults = 4), listOf(oneWayAdult, groupTicket))
@@ -97,7 +97,7 @@ internal class ThriftTicketKtTest {
     }
 
     @Test
-    fun `3 people and 2 offers`() {
+    fun `3 adults and 2 offers`() {
         val area = 1
         assertThat(
             cheapestPrice(Wanted(area, adults = 3), listOf(oneWayAdult, groupTicket))
@@ -113,7 +113,7 @@ internal class ThriftTicketKtTest {
     }
 
     @Test
-    fun `1 person 2 trips with daily ticket`() {
+    fun `1 adult 2 trips with daily ticket`() {
         val area = 1
         assertThat(
             cheapestPrice(
@@ -150,5 +150,23 @@ internal class ThriftTicketKtTest {
         )
     }
 
-    // TODO: test child considered as adult to save on group ticket
+    @Test
+    fun `4 adults and 1 child`() {
+        // in this case, getting a group ticket is cheaper than adult + child tickets
+        val area = 1
+        assertThat(
+            cheapestPrice(
+                Wanted(area, adults = 4, children = 1, tripsPerPeople = 1),
+                listOf(oneWayAdult, groupTicket, dailyTicketSingleAdult, oneWayChild)
+            )
+        ).isEqualTo(
+            // daily: 5.00
+            // 2 tickets: 6.00
+            Proposition(
+                mapOf(
+                    groupTicket to 1
+                )
+            )
+        )
+    }
 }
