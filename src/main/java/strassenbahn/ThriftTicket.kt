@@ -7,7 +7,7 @@ interface Ticket {
     val childCapacity: Int
 }
 
-data class Wanted(val area: Int, val adults: Int = 0) {
+data class Wanted(val area: Int, val adults: Int = 0, val children: Int = 0) {
     fun noPassenger() = adults <= 0
 }
 
@@ -20,9 +20,33 @@ class TicketImpl(
     override fun getPrice(area: Int): Float {
         return prices[area]?.toFloat() ?: throw IllegalArgumentException("No price for area $area")
     }
+
+    override fun toString() = description
 }
 
-data class Proposition(val tickets: Map<Ticket, Int>)
+data class Proposition(val tickets: Map<Ticket, Int>, val area: Int) {
+    fun getPrice() =
+        tickets.map {
+            it.key.getPrice(area) * it.value
+        }.sum()
+
+    val flatTickets: List<Ticket> by lazy {
+        tickets.flatMap { entry ->
+            List(entry.value) { entry.key }
+        }
+    }
+
+    val adultSeats =
+        flatTickets.sumBy {
+            it.adultCapacity
+        }
+
+    operator fun plus(ticket: Ticket): Proposition {
+        val new = this.tickets.toMutableMap()
+        new[ticket] = (this.tickets[ticket] ?: 0) + 1
+        return Proposition(new, area)
+    }
+}
 
 /**
  * Find the cheapest price given a request and an offer
@@ -31,12 +55,33 @@ fun cheapestPrice(wanted: Wanted, offer: List<Ticket>): Proposition {
     if (wanted.noPassenger()) {
         throw IllegalArgumentException("Need at least 1 traveler")
     }
-    val best = offer.minBy {
-        it.getPrice(wanted.area)
-    }!!
-    return Proposition(
-        mapOf(
-            best to 1
-        )
+    val initial = Proposition(
+        mapOf(),
+        wanted.area
+    )
+
+    return browseAllPropositions(
+        initial,
+        wanted,
+        offer.sortedByDescending { it.adultCapacity }
     )
 }
+
+fun browseAllPropositions(
+    bestSoFar: Proposition,
+    wanted: Wanted,
+    offer: List<Ticket>
+): Proposition {
+    if (bestSoFar.adultSeats >= wanted.adults) {
+        return bestSoFar
+    }
+
+    return offer.map { it ->
+        val new = bestSoFar + it
+        browseAllPropositions(new, wanted, offer)
+    }.sortedBy {
+        it.getPrice()
+    }.first()
+}
+
+
