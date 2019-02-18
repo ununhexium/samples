@@ -130,21 +130,22 @@ fun browseAllPropositions(
     while (queue.isNotEmpty()) {
         val current = queue.removeAt(0)
         val price = current.getPrice(wanted.area, wanted.tripsPerPeople)
-        val canAccomodateEverybody = current.canAccommodate(wanted)
-        if (canAccomodateEverybody) {
-            if (price < bestPriceSoFar) {
+        if (price < bestPriceSoFar) {
+            if (current.canAccommodate(wanted)) {
                 bestSoFar = current
                 bestPriceSoFar = price
             }
-        }
 
-        for (it in offer) {
-            val new = current + it
-            val noExcessAdultsCapacity = new.adultSeats <= wanted.adults + extraAdultsCapacity
-            val noExcessChildrenCapacity = new.childrenSeats <= wanted.children + extraChildrenCapacity
-            val newPrice = new.getPrice(wanted.area, wanted.tripsPerPeople)
-            if (noExcessAdultsCapacity && noExcessChildrenCapacity && newPrice < bestPriceSoFar) {
-                queue.add(new)
+            for (it in offer) {
+                val new = current + it
+                // Don't look too far
+                val noExcessAdultsCapacity = new.adultSeats <= wanted.adults + extraAdultsCapacity
+                val noExcessChildrenCapacity = new.childrenSeats <= wanted.children + extraChildrenCapacity
+                // stop searching when it's more expansive than an existing solution
+                val newPrice = new.getPrice(wanted.area, wanted.tripsPerPeople)
+                if (noExcessAdultsCapacity && noExcessChildrenCapacity && newPrice < bestPriceSoFar) {
+                    queue.add(new)
+                }
             }
         }
     }

@@ -193,6 +193,27 @@ internal class ThriftTicketKtTest {
         )
     }
 
+    @Test
+    fun `many monkeys`() {
+        // in this case, getting a group ticket is cheaper than adult + child tickets
+        val area = 1
+        assertThat(
+            cheapestPrice(
+                Wanted(area, adults = 24, children = 6, tripsPerPeople = 1),
+                listOf(oneWayAdult, groupTicket, dailyTicketSingleAdult, oneWayChild)
+            )
+        ).isEqualTo(
+            // daily: 5.00
+            // 2 tickets: 6.00
+            Proposition(
+                mapOf(
+                    dailyTicketSingleAdult to 2,
+                    groupTicket to 5
+                )
+            )
+        )
+    }
+
     @Disabled
     @Test
     fun `lotsa monkeys`() {
