@@ -20,7 +20,7 @@ internal class ThriftTicketKtTest {
         )
 
         val oneWayAdult = TicketImpl(
-            "Adult one way",
+            "Adult: one way",
             mapOf(
                 1 to 3.00,
                 2 to 3.50,
@@ -30,8 +30,19 @@ internal class ThriftTicketKtTest {
             1
         )
 
+        val oneWayChild = TicketImpl(
+            "Child: one way",
+            mapOf(
+                1 to 3.00 / 2,
+                2 to 3.50 / 2,
+                3 to 4.80 / 2,
+                4 to 5.50 / 2
+            ),
+            childrenCapacity = 1
+        )
+
         val dailyTicketSingleAdult = TicketImpl(
-            "Adult daily",
+            "Adult: daily (+3 children)",
             mapOf(
                 1 to 5.00,
                 2 to 6.00,
@@ -39,6 +50,7 @@ internal class ThriftTicketKtTest {
                 4 to 10.00
             ),
             adultCapacity = 1,
+            childrenCapacity = 3,
             allowedTrips = Int.MAX_VALUE
         )
     }
@@ -118,4 +130,25 @@ internal class ThriftTicketKtTest {
             )
         )
     }
+
+    @Test
+    fun `1 child`() {
+        val area = 1
+        assertThat(
+            cheapestPrice(
+                Wanted(area, children = 1, tripsPerPeople = 1),
+                listOf(oneWayAdult, groupTicket, dailyTicketSingleAdult, oneWayChild)
+            )
+        ).isEqualTo(
+            // daily: 5.00
+            // 2 tickets: 6.00
+            Proposition(
+                mapOf(
+                    oneWayChild to 1
+                )
+            )
+        )
+    }
+
+    // TODO: test child considered as adult to save on group ticket
 }
