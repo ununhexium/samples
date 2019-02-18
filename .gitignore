@@ -6,4 +6,5 @@ build/
 *.log
 out/
 .attach_*
+.jqwik-database
 
