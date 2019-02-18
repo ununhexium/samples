@@ -35,6 +35,9 @@ class TicketImpl(
 }
 
 data class Proposition(val tickets: Map<Ticket, Int>) {
+//    constructor(pairs: List<Pair<Ticket, Int>>): this(pairs.toMap())
+//    constructor(pair: Pair<Ticket, Int>): this(listOf(pair).toMap())
+
     companion object {
         val EMPTY = Proposition(mapOf())
     }
@@ -108,7 +111,11 @@ fun browseAllPropositions(
 ): Proposition {
     var bestSoFar = Proposition.EMPTY
     var bestPriceSoFar = Float.MAX_VALUE
-    val queue = LinkedList<Proposition>(listOf(bestSoFar))
+    /**
+     * The Int, an index, is there to know which element in the offer list
+     * was used to create the proposition and avoid repeating propositions
+     */
+    val queue = LinkedList<Pair<Int, Proposition>>(listOf(0 to bestSoFar))
 
     /**
      * we may have to look for solutions which don't use all the seats
@@ -128,7 +135,7 @@ fun browseAllPropositions(
     }!!.childrenCapacity + wanted.children * maxChildrenToAdultRatio
 
     while (queue.isNotEmpty()) {
-        val current = queue.removeAt(0)
+        val (index, current) = queue.removeAt(0)
         val price = current.getPrice(wanted.area, wanted.tripsPerPeople)
         if (price < bestPriceSoFar) {
             if (current.canAccommodate(wanted)) {
@@ -136,15 +143,15 @@ fun browseAllPropositions(
                 bestPriceSoFar = price
             }
 
-            for (it in offer) {
-                val new = current + it
+            for (i in index until offer.size) {
+                val new = current + offer[i]
                 // Don't look too far
                 val noExcessAdultsCapacity = new.adultSeats <= wanted.adults + extraAdultsCapacity
                 val noExcessChildrenCapacity = new.childrenSeats <= wanted.children + extraChildrenCapacity
                 // stop searching when it's more expansive than an existing solution
                 val newPrice = new.getPrice(wanted.area, wanted.tripsPerPeople)
                 if (noExcessAdultsCapacity && noExcessChildrenCapacity && newPrice < bestPriceSoFar) {
-                    queue.add(new)
+                    queue.add(i to new)
                 }
             }
         }
