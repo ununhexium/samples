@@ -12,7 +12,8 @@ internal class ThriftTicketKtTest {
             mapOf(
                 1 to 10,
                 2 to 12,
-                3 to 14.5
+                3 to 14.5,
+                4 to 20
             ),
             5,
             0
@@ -42,11 +43,30 @@ internal class ThriftTicketKtTest {
     }
 
     @Test
-    fun `can find the cheapest ticket when there is only 1 person and 1 offer`() {
+    fun `1 person and 1 offer`() {
         assertThat(
             cheapestPrice(Wanted(1, adults = 1), listOf(oneWayAdult))
         ).isEqualTo(
-            5.50
+            Proposition(
+                mapOf(
+                    oneWayAdult to 1
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `4 people and 2 offers`() {
+        assertThat(
+            cheapestPrice(Wanted(1, adults = 4), listOf(oneWayAdult, groupTicket))
+        ).isEqualTo(
+            // group ticket: 10
+            // individual ticket: 4*3 = 12
+            Proposition(
+                mapOf(
+                    groupTicket to 1
+                )
+            )
         )
     }
 }

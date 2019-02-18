@@ -22,12 +22,21 @@ class TicketImpl(
     }
 }
 
+data class Proposition(val tickets: Map<Ticket, Int>)
+
 /**
  * Find the cheapest price given a request and an offer
  */
-fun cheapestPrice(wanted: Wanted, offer: List<Ticket>): Float {
+fun cheapestPrice(wanted: Wanted, offer: List<Ticket>): Proposition {
     if (wanted.noPassenger()) {
         throw IllegalArgumentException("Need at least 1 traveler")
     }
-    return 0f
+    val best = offer.minBy {
+        it.getPrice(wanted.area)
+    }!!
+    return Proposition(
+        mapOf(
+            best to 1
+        )
+    )
 }
