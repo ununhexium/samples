@@ -29,6 +29,18 @@ internal class ThriftTicketKtTest {
             ),
             1
         )
+
+        val dailyTicketSingleAdult = TicketImpl(
+            "Adult daily",
+            mapOf(
+                1 to 5.00,
+                2 to 6.00,
+                3 to 8.60,
+                4 to 10.00
+            ),
+            adultCapacity = 1,
+            allowedTrips = Int.MAX_VALUE
+        )
     }
 
     @Test
@@ -51,8 +63,7 @@ internal class ThriftTicketKtTest {
             Proposition(
                 mapOf(
                     oneWayAdult to 1
-                ),
-                area
+                )
             )
         )
     }
@@ -68,8 +79,7 @@ internal class ThriftTicketKtTest {
             Proposition(
                 mapOf(
                     groupTicket to 1
-                ),
-                area
+                )
             )
         )
     }
@@ -85,8 +95,26 @@ internal class ThriftTicketKtTest {
             Proposition(
                 mapOf(
                     oneWayAdult to 3
-                ),
-                area
+                )
+            )
+        )
+    }
+
+    @Test
+    fun `1 person 2 trips with daily ticket`() {
+        val area = 1
+        assertThat(
+            cheapestPrice(
+                Wanted(area, adults = 1, tripsPerPeople = 2),
+                listOf(oneWayAdult, groupTicket, dailyTicketSingleAdult)
+            )
+        ).isEqualTo(
+            // daily: 5.00
+            // 2 tickets: 6.00
+            Proposition(
+                mapOf(
+                    dailyTicketSingleAdult to 1
+                )
             )
         )
     }
